@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-     <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <title>MobiLeLeLe</title>
     <link rel="stylesheet" href="/css/reset-css.css"/>
     <link rel="stylesheet" href="/css/bootstrap.min.css"/>
@@ -19,7 +19,7 @@
     <div
             th:object="${offerDetails}"
             class="offers row mx-auto d-flex flex-row justify-content-center">
-        <div class="offer card col-sm-2 col-md-3  col-lg-4 m-1 p-0" >
+        <div class="offer card col-sm-2 col-md-3  col-lg-4 m-1 p-0">
 
             <div class="card-body pb-1">
                 <h5 class="card-title">
@@ -28,30 +28,40 @@
             <ul class="offer-details list-group list-group-flush">
                 <li class="list-group-item">
                     <div class="card-text"><span th:text="*{mileage}">• Mileage</span></div>
-                    <div class="card-text"><span>• Price</span></div>
+                    <div class="card-text"><span id="price" th:text="*{price}">• Price</span></div>
                     <div class="card-text"><span th:text="*{engine}">• Engine type</span></div>
                     <div class="card-text"><span>• Transmission type</span></div>
+                    <div class="card-text">• Currency
+                        <select id="currency">
+                            <option th:each="currency : *{allCurrencies}"
+                                    th:value="${currency}"
+                                    th:selected="${currency} == BGN"
+                                    th:text="${currency}">
+                            </option>
+                        </select>
+                    </div>
                     <div class="card-text"><span>• Offer created</span></div>
                     <div class="card-text"><span>• Offer modified</span></div>
                     <div class="card-text"><span>• Seller - First and Last name</span></div>
                 </li>
             </ul>
+            <input type="hidden" id="priceInBGN" th:value="*{price}">
             <div class="card-body">
                 <a class="card-link" href="/">Update</a>
-                <form   th:method="delete"
-                        th:action="@{/offers/{id}(id=*{id})}">
+                <form th:method="delete"
+                      th:action="@{/offers/{id}(id=*{id})}">
                     <input type="submit" class="btn btn-link" value="Delete"/>
                 </form>
             </div>
         </div>
         <div class="offer card col-sm-2 col-md-3  col-lg-4 m-1 p-0">
-            <img src="/" class="card-img-top"  alt="Car image">
+            <img src="/" class="card-img-top" alt="Car image">
         </div>
     </div>
 </div>
 
 <div>
-             <footer> </footer>
+    <footer></footer>
 </div>
 
 </body>

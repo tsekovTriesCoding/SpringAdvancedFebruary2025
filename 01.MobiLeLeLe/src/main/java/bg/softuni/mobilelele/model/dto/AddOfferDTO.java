@@ -11,7 +11,8 @@ public record AddOfferDTO(@NotNull(
         message = "{add.offer.description.length}",
         min = 5,
         max = 500
-) String description, @NotNull @PositiveOrZero Integer mileage, @NotNull @PositiveOrZero Integer price, @NotNull EngineTypeEnum engineType) {
+) String description, @NotNull @PositiveOrZero Integer mileage, @NotNull @PositiveOrZero Integer price,
+                          @NotNull EngineTypeEnum engineType) {
     public AddOfferDTO(@NotNull(
             message = "{add.offer.description.not.null}"
     ) @Size(
@@ -26,7 +27,7 @@ public record AddOfferDTO(@NotNull(
     }
 
     public static AddOfferDTO empty() {
-        return new AddOfferDTO((String)null, (Integer)null, (Integer)null, (EngineTypeEnum)null);
+        return new AddOfferDTO((String) null, (Integer) null, (Integer) null, (EngineTypeEnum) null);
     }
 
     public @NotNull(
