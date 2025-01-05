@@ -1,21 +1,24 @@
 package bg.softuni.mobilelele.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import bg.softuni.mobilelele.model.enums.RoleEnum;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "roles")
 public class UserRole extends BaseEntity {
-    private String name;
+    @Column(unique = true)
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
 
     public UserRole() {
     }
 
-    public String getName() {
-        return this.name;
+    public RoleEnum getRole() {
+        return role;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public UserRole setRole(RoleEnum role) {
+        this.role = role;
+        return this;
     }
 }

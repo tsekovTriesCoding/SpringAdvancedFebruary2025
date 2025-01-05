@@ -20,16 +20,4 @@ public class LoginController {
     public String login() {
         return "auth-login";
     }
-
-    @PostMapping({"/login"})
-    public String login(UserLoginDTO userLoginDTO) {
-        this.userService.login(userLoginDTO);
-        return "redirect:/";
-    }
-
-    @PostMapping({"/logout"})
-    public String logout() {
-        this.userService.logout();
-        return "redirect:/";
-    }
 }

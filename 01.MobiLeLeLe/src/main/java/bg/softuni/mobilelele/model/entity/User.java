@@ -1,10 +1,10 @@
 package bg.softuni.mobilelele.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import javax.management.relation.Role;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -25,8 +25,12 @@ public class User extends BaseEntity {
             name = "is_active"
     )
     private boolean isActive;
-    @OneToOne
-    private UserRole role;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<UserRole> roles;
     @Column(
             name = "image_url"
     )
@@ -79,12 +83,13 @@ public class User extends BaseEntity {
         this.isActive = active;
     }
 
-    public UserRole getRole() {
-        return this.role;
+    public List<UserRole> getRoles() {
+        return roles;
     }
 
-    public void setRole(UserRole role) {
-        this.role = role;
+    public User setRoles(List<UserRole> roles) {
+        this.roles = roles;
+        return this;
     }
 
     public String getImageUrl() {
