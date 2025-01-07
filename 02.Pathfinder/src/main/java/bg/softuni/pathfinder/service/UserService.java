@@ -7,9 +7,5 @@ import bg.softuni.pathfinder.model.dto.UserRegisterDTO;
 public interface UserService {
     void register(UserRegisterDTO userRegisterDTO);
 
-    boolean login(UserLoginDTO userLoginDTO);
-
-    void logout();
-
     UserProfileDTO getUserProfile();
 }

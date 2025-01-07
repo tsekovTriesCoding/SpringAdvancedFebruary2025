@@ -5,6 +5,7 @@ import bg.softuni.pathfinder.model.dto.UserRegisterDTO;
 import bg.softuni.pathfinder.model.enums.Level;
 import bg.softuni.pathfinder.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,16 +13,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping({"/users"})
+@RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @ModelAttribute("allLevels")
     public Level[] allLevels() {
@@ -51,26 +50,27 @@ public class UserController {
         }
     }
 
-    @GetMapping({"/login"})
-    public String loginView() {
-        return "login";
-    }
+    @GetMapping("/login")
+    public ModelAndView viewLogin() {
+        ModelAndView modelAndView = new ModelAndView("login");
 
-    @PostMapping({"/login"})
-    public String login(UserLoginDTO userLoginDTO) {
-        this.userService.login(userLoginDTO);
-        return "redirect:/";
-    }
+        modelAndView.addObject("loginDTO", new UserLoginDTO());
 
-    @PostMapping({"/logout"})
-    public String logout() {
-        this.userService.logout();
-        return "redirect:/";
+        return modelAndView;
     }
 
     @GetMapping({"/profile"})
     public String details(Model model) {
         model.addAttribute("userProfile", this.userService.getUserProfile());
         return "profile";
+    }
+
+    @GetMapping("/login-error")
+    public ModelAndView loginError() {
+        ModelAndView modelAndView = new ModelAndView("login");
+        modelAndView.addObject("loginDTO", new UserLoginDTO());
+        modelAndView.addObject("showErrorMessage", true);
+
+        return modelAndView;
     }
 }

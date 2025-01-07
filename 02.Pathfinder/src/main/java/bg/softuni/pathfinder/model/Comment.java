@@ -7,12 +7,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.Instant;
 
 @Entity
-@Table(
-        name = "comments"
-)
+@Table(name = "comments")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Comment {
     @Id
     @GeneratedValue(
@@ -38,55 +43,4 @@ public class Comment {
             optional = false
     )
     private Route route;
-
-    public Comment() {
-    }
-
-    public long getId() {
-        return this.id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public boolean isApproved() {
-        return this.approved;
-    }
-
-    public void setApproved(boolean approved) {
-        this.approved = approved;
-    }
-
-    public Instant getCreated() {
-        return this.created;
-    }
-
-    public void setCreated(Instant created) {
-        this.created = created;
-    }
-
-    public String getTextContent() {
-        return this.textContent;
-    }
-
-    public void setTextContent(String textContent) {
-        this.textContent = textContent;
-    }
-
-    public User getAuthor() {
-        return this.author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
-    }
-
-    public Route getRoute() {
-        return this.route;
-    }
-
-    public void setRoute(Route route) {
-        this.route = route;
-    }
 }

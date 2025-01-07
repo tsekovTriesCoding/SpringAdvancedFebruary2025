@@ -7,11 +7,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(
-        name = "pictures"
-)
+@Table(name = "pictures")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Picture {
     @Id
     @GeneratedValue(
@@ -33,47 +37,4 @@ public class Picture {
             optional = false
     )
     private Route route;
-
-    public Picture() {
-    }
-
-    public long getId() {
-        return this.id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return this.title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getUrl() {
-        return this.url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public User getAuthor() {
-        return this.author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
-    }
-
-    public Route getRoute() {
-        return this.route;
-    }
-
-    public void setRoute(Route route) {
-        this.route = route;
-    }
 }

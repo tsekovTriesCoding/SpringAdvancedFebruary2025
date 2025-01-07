@@ -5,10 +5,10 @@ import bg.softuni.pathfinder.model.Route;
 import bg.softuni.pathfinder.model.dto.AddRouteDTO;
 import bg.softuni.pathfinder.model.dto.RouteShortInfoDTO;
 import bg.softuni.pathfinder.repository.RouteRepository;
-import bg.softuni.pathfinder.service.CurrentUser;
 import bg.softuni.pathfinder.service.RouteService;
 import bg.softuni.pathfinder.service.UserService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,21 +24,11 @@ import java.util.Optional;
 import java.util.Random;
 
 @Service
+@RequiredArgsConstructor
 public class RouteServiceImpl implements RouteService {
-    private final UserService userService;
-    private final CurrentUser currentUser;
     private final RouteRepository routeRepository;
     private final ModelMapper modelMapper;
     private final Random random = new Random();
-
-    public RouteServiceImpl(UserService userService,
-                            CurrentUser currentUser,
-                            RouteRepository routeRepository) {
-        this.userService = userService;
-        this.currentUser = currentUser;
-        this.routeRepository = routeRepository;
-        this.modelMapper = new ModelMapper();
-    }
 
     @Transactional
     public List<RouteShortInfoDTO> getAll() {
@@ -51,7 +41,7 @@ public class RouteServiceImpl implements RouteService {
         long randomId = this.random.nextLong(routeCount) + 1;
         Optional<Route> route = this.routeRepository.findById(randomId);
         if (route.isEmpty()) {
-
+// throw exception; return empty
         }
 
         return this.mapToShortInfo(route.get());
@@ -75,7 +65,7 @@ public class RouteServiceImpl implements RouteService {
                 .normalize()
                 .toAbsolutePath();
 
-        try(InputStream inputStream = file.getInputStream()) {
+        try (InputStream inputStream = file.getInputStream()) {
             Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
         }
 //originalFileName,fileLocation -> /uploads/{userId}{fileId}.gpx - this is example for unique file names
