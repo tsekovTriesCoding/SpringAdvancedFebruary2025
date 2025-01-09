@@ -1,9 +1,9 @@
 package bg.softuni.mobilelele.model.dto;
 
-import bg.softuni.mobilelele.model.enums.Engine;
+import bg.softuni.mobilelele.model.enums.EngineTypeEnum;
 
-public record OfferSummaryDTO(Long id, String description, Integer mileage, Engine engineType, double price) {
-    public OfferSummaryDTO(Long id, String description, Integer mileage, Engine engineType, double price) {
+public record OfferSummaryDTO(Long id, String description, Integer mileage, EngineTypeEnum engineType, double price) {
+    public OfferSummaryDTO(Long id, String description, Integer mileage, EngineTypeEnum engineType, double price) {
         this.id = id;
         this.description = description;
         this.mileage = mileage;
@@ -23,7 +23,7 @@ public record OfferSummaryDTO(Long id, String description, Integer mileage, Engi
         return this.mileage;
     }
 
-    public Engine engineType() {
+    public EngineTypeEnum engineType() {
         return this.engineType;
     }
 }

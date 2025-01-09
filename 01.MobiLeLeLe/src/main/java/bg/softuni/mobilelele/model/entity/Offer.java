@@ -1,13 +1,8 @@
 package bg.softuni.mobilelele.model.entity;
 
-import bg.softuni.mobilelele.model.enums.Engine;
+import bg.softuni.mobilelele.model.enums.EngineTypeEnum;
 import bg.softuni.mobilelele.model.enums.Transmission;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +12,7 @@ public class Offer extends BaseEntity {
     @Column
     private String description;
     @Enumerated(EnumType.STRING)
-    private Engine engine;
+    private EngineTypeEnum engine;
     @Column(
             name = "image-url"
     )
@@ -51,12 +46,13 @@ public class Offer extends BaseEntity {
         this.description = description;
     }
 
-    public Engine getEngine() {
-        return this.engine;
+    public EngineTypeEnum getEngine() {
+        return engine;
     }
 
-    public void setEngine(Engine engine) {
+    public Offer setEngine(EngineTypeEnum engine) {
         this.engine = engine;
+        return this;
     }
 
     public String getImageUrl() {

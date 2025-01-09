@@ -3,16 +3,14 @@ package bg.softuni.mobilelele.web;
 import bg.softuni.mobilelele.model.dto.AddOfferDTO;
 import bg.softuni.mobilelele.model.enums.EngineTypeEnum;
 import bg.softuni.mobilelele.service.OfferService;
+import bg.softuni.mobilelele.service.exception.ObjectNotFoundException;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -55,6 +53,16 @@ public class OfferController {
         model.addAttribute("offerDetails", this.offerService.getOfferDetails(id));
         return "details";
     }
+
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    @ExceptionHandler(ObjectNotFoundException.class)
+//    public ModelAndView handleObjectNotFound(ObjectNotFoundException e) {
+//        ModelAndView mav = new ModelAndView("offer-not-found");
+//        mav.addObject("offerId", e.getId());
+//
+//        return mav;
+//    }
+
 
     @DeleteMapping({"/{id}"})
     public String deleteOffer(@PathVariable("id") Long id) {

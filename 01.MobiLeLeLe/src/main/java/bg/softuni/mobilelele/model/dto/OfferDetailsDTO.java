@@ -1,16 +1,17 @@
 package bg.softuni.mobilelele.model.dto;
 
-import bg.softuni.mobilelele.model.enums.Engine;
+import bg.softuni.mobilelele.model.enums.EngineTypeEnum;
+
 import java.util.List;
 
 public record OfferDetailsDTO(Long id,
                               String description,
                               Integer mileage,
                               Double price,
-                              Engine engine,
+                              EngineTypeEnum engine,
                               List<String> allCurrencies,
                               double offerPrice) {
-    public OfferDetailsDTO(Long id, String description, Integer mileage, Double price, Engine engine, List<String> allCurrencies, double offerPrice) {
+    public OfferDetailsDTO(Long id, String description, Integer mileage, Double price, EngineTypeEnum engine, List<String> allCurrencies, double offerPrice) {
         this.id = id;
         this.description = description;
         this.mileage = mileage;
@@ -36,7 +37,7 @@ public record OfferDetailsDTO(Long id,
         return this.price;
     }
 
-    public Engine engine() {
+    public EngineTypeEnum engine() {
         return this.engine;
     }
 

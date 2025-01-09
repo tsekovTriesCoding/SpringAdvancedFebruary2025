@@ -13,13 +13,11 @@ public record AddOfferDTO(@NotNull(
         max = 500
 ) String description, @NotNull @PositiveOrZero Integer mileage, @NotNull @PositiveOrZero Integer price,
                           @NotNull EngineTypeEnum engineType) {
-    public AddOfferDTO(@NotNull(
-            message = "{add.offer.description.not.null}"
-    ) @Size(
-            message = "{add.offer.description.length}",
-            min = 5,
-            max = 500
-    ) String description, @NotNull @PositiveOrZero Integer mileage, @NotNull @PositiveOrZero Integer price, @NotNull EngineTypeEnum engineType) {
+    public AddOfferDTO(@NotNull(message = "{add.offer.description.not.null}")
+                       @Size(message = "{add.offer.description.length}", min = 5, max = 500) String description,
+                       @NotNull @PositiveOrZero Integer mileage,
+                       @NotNull @PositiveOrZero Integer price,
+                       @NotNull EngineTypeEnum engineType) {
         this.description = description;
         this.mileage = mileage;
         this.price = price;
