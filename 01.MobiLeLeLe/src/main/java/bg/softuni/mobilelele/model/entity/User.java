@@ -43,44 +43,76 @@ public class User extends BaseEntity {
     public User() {
     }
 
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public User setCreated(LocalDateTime created) {
+        this.created = created;
+        return this;
+    }
+
     public String getEmail() {
-        return this.email;
+        return email;
     }
 
-    public void setEmail(String email) {
+    public User setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return this.password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+        return this;
     }
 
     public String getFirstName() {
-        return this.firstName;
+        return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public User setFirstName(String firstName) {
         this.firstName = firstName;
+        return this;
     }
 
-    public String getLastName() {
-        return this.lastName;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public User setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+        return this;
     }
 
     public boolean isActive() {
-        return this.isActive;
+        return isActive;
     }
 
-    public void setActive(boolean active) {
-        this.isActive = active;
+    public User setActive(boolean active) {
+        isActive = active;
+        return this;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public User setLastName(String lastName) {
+        this.lastName = lastName;
+        return this;
+    }
+
+    public LocalDateTime getModified() {
+        return modified;
+    }
+
+    public User setModified(LocalDateTime modified) {
+        this.modified = modified;
+        return this;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public User setPassword(String password) {
+        this.password = password;
+        return this;
     }
 
     public List<UserRole> getRoles() {
@@ -90,29 +122,5 @@ public class User extends BaseEntity {
     public User setRoles(List<UserRole> roles) {
         this.roles = roles;
         return this;
-    }
-
-    public String getImageUrl() {
-        return this.imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public LocalDateTime getCreated() {
-        return this.created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
-
-    public LocalDateTime getModified() {
-        return this.modified;
-    }
-
-    public void setModified(LocalDateTime modified) {
-        this.modified = modified;
     }
 }
