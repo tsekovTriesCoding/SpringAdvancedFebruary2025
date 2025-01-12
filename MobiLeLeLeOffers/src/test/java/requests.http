@@ -1,0 +1,9 @@
+POST http://localhost:8081/offers
+Content-Type: application/json
+
+{
+  "description": "test new create offer",
+  "mileage": 1000,
+  "price": 1200,
+  "engineType": "HYBRID"
+}

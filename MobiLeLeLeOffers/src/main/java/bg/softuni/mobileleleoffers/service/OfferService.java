@@ -6,7 +6,8 @@ import bg.softuni.mobileleleoffers.model.dto.OfferDTO;
 import java.util.List;
 
 public interface OfferService {
-    void createOffer(AddOfferDTO addOfferDTO);
+
+    OfferDTO createOffer(AddOfferDTO addOfferDTO);
 
     List<OfferDTO> getAllOffers();
 

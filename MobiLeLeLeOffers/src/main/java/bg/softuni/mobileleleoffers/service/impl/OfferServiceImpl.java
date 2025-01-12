@@ -5,6 +5,7 @@ import bg.softuni.mobileleleoffers.model.dto.OfferDTO;
 import bg.softuni.mobileleleoffers.model.entity.Offer;
 import bg.softuni.mobileleleoffers.repository.OfferRepository;
 import bg.softuni.mobileleleoffers.service.OfferService;
+import bg.softuni.mobileleleoffers.service.exception.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +19,9 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public void createOffer(AddOfferDTO addOfferDTO) {
-        this.offerRepository.save(map(addOfferDTO));
+    public OfferDTO createOffer(AddOfferDTO addOfferDTO) {
+        Offer offer = this.offerRepository.save(map(addOfferDTO));
+        return map(offer);
     }
 
     @Override
@@ -39,7 +41,7 @@ public class OfferServiceImpl implements OfferService {
     public OfferDTO getOfferById(Long offerId) {
         return this.offerRepository.findById(offerId)
                 .map(OfferServiceImpl::map)
-                .orElseThrow(() -> new IllegalArgumentException("Not found!"));
+                .orElseThrow(ObjectNotFoundException::new);
     }
 
     private static OfferDTO map(Offer offer) {

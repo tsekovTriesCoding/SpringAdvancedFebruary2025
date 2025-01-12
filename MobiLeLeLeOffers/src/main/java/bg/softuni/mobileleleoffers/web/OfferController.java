@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 
@@ -29,8 +30,13 @@ public class OfferController {
     @PostMapping()
     public ResponseEntity<OfferDTO> createOffer(@RequestBody AddOfferDTO addOfferDTO) {
         this.LOGGER.info("Going to create an offer {}", addOfferDTO);
-        this.offerService.createOffer(addOfferDTO);
-        return ResponseEntity.ok().build();
+        OfferDTO offerDTO = this.offerService.createOffer(addOfferDTO);
+
+        return ResponseEntity.created(ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                        .path("/{id}").buildAndExpand(offerDTO.id())
+                        .toUri())
+                .body(offerDTO);
     }
 
     @GetMapping("/{id}")
@@ -45,6 +51,6 @@ public class OfferController {
         this.LOGGER.info("Going to delete an offer {}", id);
         this.offerService.deleteOffer(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
