@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerUser(UserRegistrationDTO userRegistrationDTO) {
-        this.userRepository.saveAndFlush(this.map(userRegistrationDTO));
+        this.userRepository.save(this.map(userRegistrationDTO));
     }
 
     private User map(UserRegistrationDTO userRegistrationDTO) {
