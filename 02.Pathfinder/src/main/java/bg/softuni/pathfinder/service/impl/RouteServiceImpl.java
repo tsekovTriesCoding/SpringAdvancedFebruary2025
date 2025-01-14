@@ -3,14 +3,16 @@ package bg.softuni.pathfinder.service.impl;
 import bg.softuni.pathfinder.model.Picture;
 import bg.softuni.pathfinder.model.Route;
 import bg.softuni.pathfinder.model.dto.AddRouteDTO;
+import bg.softuni.pathfinder.model.dto.RouteCategoryDTO;
+import bg.softuni.pathfinder.model.dto.RouteDetailsDTO;
 import bg.softuni.pathfinder.model.dto.RouteShortInfoDTO;
+import bg.softuni.pathfinder.model.enums.CategoryType;
 import bg.softuni.pathfinder.repository.RouteRepository;
 import bg.softuni.pathfinder.service.RouteService;
-import bg.softuni.pathfinder.service.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -19,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -70,5 +73,40 @@ public class RouteServiceImpl implements RouteService {
         }
 //originalFileName,fileLocation -> /uploads/{userId}{fileId}.gpx - this is example for unique file names
 //        may use imgur api to upload img to their site,not local.... but local is OK for now
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<RouteCategoryDTO> getRouteByCategory(CategoryType category) {
+        List<Route> allByCategoryName = routeRepository.findAllByCategories_Name(category);
+
+        return allByCategoryName.stream()
+                .map(route -> modelMapper.map(route, RouteCategoryDTO.class))
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public RouteCategoryDTO getMostCommentedRoute() {
+        Route mostCommented = this.routeRepository.findAll()
+                .stream()
+                .max(Comparator.comparingInt(route -> route.getComments().size()))
+                .orElse(null);
+
+        RouteCategoryDTO routeCategoryDTO = this.modelMapper.map(mostCommented, RouteCategoryDTO.class);
+        routeCategoryDTO.setImageUrl("http://res.cloudinary.com/ch-cloud/image/upload/v1630581072/d47iy8kxv6qni8euhojk.jpg");
+        return routeCategoryDTO;
+    }
+
+    @Transactional
+    public RouteDetailsDTO getDetails(Long id) {
+        Route route = routeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Route with id: " + id + " was not found"));
+
+        RouteDetailsDTO dto = modelMapper.map(route, RouteDetailsDTO.class);
+        dto.setVideoUrl("https://www.youtube.com/embed/" + dto.getVideoUrl());
+        dto.setImageUrls(List.of("/images/pic4.jpg", "/images/pic1.jpg"));
+
+        return dto;
     }
 }

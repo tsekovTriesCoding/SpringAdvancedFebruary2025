@@ -11,11 +11,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
@@ -54,5 +52,30 @@ public class RouteController {
 
         routeService.add(addRouteDTO, file);
         return "redirect:/add-route";
+    }
+
+    @GetMapping("/route/{id}")
+    public ModelAndView showRoute(@PathVariable Long id) {
+        ModelAndView modelAndView = new ModelAndView("route-details");
+
+        modelAndView.addObject("route", this.routeService.getDetails(id));
+        return modelAndView;
+    }
+
+    @GetMapping("/routes/{category}")
+    public ModelAndView showRouteByCategory(@PathVariable CategoryType category) {
+        String view = "";
+        switch (category){
+            case CAR -> view ="car";
+            case BICYCLE -> view ="bicycle";
+            case PEDESTRIAN -> view ="pedestrian";
+            case MOTORCYCLE -> view ="motorcycle";
+        }
+
+        ModelAndView modelAndView = new ModelAndView(view);
+
+        modelAndView.addObject("routes", routeService.getRouteByCategory(category));
+
+        return modelAndView;
     }
 }
