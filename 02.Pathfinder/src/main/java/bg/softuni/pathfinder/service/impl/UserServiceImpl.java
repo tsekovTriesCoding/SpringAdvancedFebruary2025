@@ -27,6 +27,16 @@ public class UserServiceImpl implements UserService {
 //        return (UserProfileDTO)this.modelMapper.map(this.currentUser.getUser(), UserProfileDTO.class);
     }
 
+    @Override
+    public boolean isUsernameUnique(String username) {
+        return userRepository.findByUsername(username).isEmpty();
+    }
+
+    @Override
+    public boolean isEmailUnique(String email) {
+        return !userRepository.existsByEmail(email);
+    }
+
     private User map(UserRegisterDTO userRegisterDTO) {
         User user = this.modelMapper.map(userRegisterDTO, User.class);
         user.setPassword(this.passwordEncoder.encode(userRegisterDTO.getPassword()));

@@ -8,4 +8,8 @@ public interface UserService {
     void register(UserRegisterDTO userRegisterDTO);
 
     UserProfileDTO getUserProfile();
+
+    boolean isUsernameUnique(String username);
+
+    boolean isEmailUnique(String email);
 }

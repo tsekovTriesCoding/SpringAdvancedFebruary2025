@@ -1,6 +1,9 @@
 package bg.softuni.pathfinder.model.dto;
 
 import bg.softuni.pathfinder.model.enums.Level;
+import bg.softuni.pathfinder.validation.annotation.UniqueEmail;
+import bg.softuni.pathfinder.validation.annotation.UniqueUsername;
+import bg.softuni.pathfinder.validation.annotation.ValidatePasswords;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,22 +12,31 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@ValidatePasswords
 public class UserRegisterDTO {
-    private @NotBlank
-    @Size(
-            min = 2
-    ) String username;
-    private @NotBlank
-    @Size(
-            min = 5
-    ) String fullName;
-    private @NotBlank
-    @Email String email;
-    private @Min(0L)
-    @Max(90L) Integer age;
+    @NotBlank
+    @Size(min = 2)
+    @UniqueUsername
+    private String username;
+
+    @NotBlank
+    @Size(min = 5)
+    private String fullName;
+
+    @NotBlank
+    @Email
+    @UniqueEmail
+    private String email;
+
+    @Min(0L)
+    @Max(90L)
+    private Integer age;
+
     private Level level;
-    private @Size(
-            min = 5
-    ) String password;
+
+    @Size(min = 5)
+    private String password;
+
+    @Size(min = 5, max = 20, message = "Password length must be between 5 and 20 characters.")
     private String confirmPassword;
 }

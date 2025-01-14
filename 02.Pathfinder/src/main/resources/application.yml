@@ -28,7 +28,9 @@ spring:
       hibernate:
         format_sql: true
     defer-datasource-initialization: true
-#Cloudinary Properties
+  thymeleaf:
+    cache: false
+  #Cloudinary Properties
 #cloudinary:
   #api-key: 
   #api-secret: 
