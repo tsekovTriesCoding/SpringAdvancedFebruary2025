@@ -2,6 +2,7 @@ package bg.softuni.mobilelele.web;
 
 import bg.softuni.mobilelele.model.dto.UserRegistrationDTO;
 import bg.softuni.mobilelele.service.UserService;
+import bg.softuni.mobilelele.web.aop.WarnIfExecutionExceeds;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,6 +28,8 @@ public class RegisterController {
         return "auth-register";
     }
 
+
+    @WarnIfExecutionExceeds(threshold = 1000)
     @PostMapping({"/register"})
     public String register(UserRegistrationDTO userRegistrationDTO) {
         this.userService.registerUser(userRegistrationDTO);

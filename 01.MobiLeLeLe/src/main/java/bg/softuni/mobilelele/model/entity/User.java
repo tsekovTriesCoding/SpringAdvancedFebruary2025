@@ -1,14 +1,21 @@
 package bg.softuni.mobilelele.model.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
 
-import javax.management.relation.Role;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
+
+import static org.hibernate.type.SqlTypes.VARCHAR;
 
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {
+
+    @UUIDSequence
+    @JdbcTypeCode(VARCHAR)
+    private UUID uuid;
     @Column
     private String email;
     @Column
@@ -41,6 +48,15 @@ public class User extends BaseEntity {
     private LocalDateTime modified;
 
     public User() {
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public User setUuid(UUID uuid) {
+        this.uuid = uuid;
+        return this;
     }
 
     public LocalDateTime getCreated() {
