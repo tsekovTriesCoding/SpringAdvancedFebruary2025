@@ -30,6 +30,7 @@ public class MobileleleUserDetailsServiceImpl implements UserDetailsService {
                 user.getEmail(),
                 user.getPassword(),
                 user.getRoles().stream().map(UserRole::getRole).map(MobileleleUserDetailsServiceImpl::map).toList(),
+                user.getUuid(),
                 user.getFirstName(),
                 user.getLastName()
         );

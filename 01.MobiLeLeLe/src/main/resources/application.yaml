@@ -31,3 +31,7 @@ forex:
 offers:
   api:
     baseUrl: "http://localhost:8081"
+
+jwt:
+  secret: ${JWT_KEY}
+  expiration: ${JWT_EXPIRATION}
