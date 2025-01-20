@@ -3,6 +3,11 @@ package bg.softuni.mobileleleoffers.web;
 import bg.softuni.mobileleleoffers.model.dto.AddOfferDTO;
 import bg.softuni.mobileleleoffers.model.dto.OfferDTO;
 import bg.softuni.mobileleleoffers.service.OfferService;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +22,10 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/offers")
+@Tag(
+        name = "Offers",
+        description = "The controller responsible for offer management."
+)
 public class OfferController {
     private final Logger LOGGER = LoggerFactory.getLogger(OfferController.class);
     private final OfferService offerService;
@@ -53,6 +62,27 @@ public class OfferController {
                 .body(offerDTO);
     }
 
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "The offer details",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = OfferDTO.class)
+                                    )
+                            }
+                    ),
+                    @ApiResponse(responseCode = "404", description = "If the offer was not found",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json"
+                                    )
+                            }
+                    )
+            }
+    ) //for swagger
     @GetMapping("/{id}")
     public ResponseEntity<OfferDTO> findById(@PathVariable("id") Long id) {
         this.LOGGER.info("Going to get an offer with id {}", id);
