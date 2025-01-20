@@ -24,3 +24,6 @@ spring:
         enabled: true
 server:
   port: 8081
+
+jwt:
+  secret: ${JWT_KEY}

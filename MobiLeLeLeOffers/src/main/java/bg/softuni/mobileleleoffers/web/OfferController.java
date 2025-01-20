@@ -6,10 +6,14 @@ import bg.softuni.mobileleleoffers.service.OfferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/offers")
@@ -22,7 +26,17 @@ public class OfferController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OfferDTO>> getAllOffers() {
+    public ResponseEntity<List<OfferDTO>> getAllOffers(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails != null) {
+            System.out.println("Subject: " + userDetails.getUsername());
+            System.out.println("Roles: " + userDetails.getAuthorities()
+                    .stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.joining(", ")));
+        } else {
+            System.out.println("No current user");
+        }
+
         this.LOGGER.info("Get all offers...");
         return ResponseEntity.ok(offerService.getAllOffers());
     }

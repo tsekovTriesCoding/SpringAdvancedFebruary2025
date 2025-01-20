@@ -46,7 +46,7 @@ public class RestConfig {
                                 )
                         );
 
-                        System.out.println("BEARER TOKEN: " + bearerToken);
+                        System.out.println(bearerToken);
 
                         r.getHeaders().setBearerAuth(bearerToken);
                     });

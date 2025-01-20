@@ -63,8 +63,7 @@ public class OfferServiceImpl implements OfferService {
                 .uri("/offers")
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .body(new ParameterizedTypeReference<>() {
-                });
+                .body(new ParameterizedTypeReference<>() {});
     }
 
     public void deleteOffer(Long id) {
