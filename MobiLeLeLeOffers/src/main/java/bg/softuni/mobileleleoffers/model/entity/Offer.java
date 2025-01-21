@@ -3,13 +3,15 @@ package bg.softuni.mobileleleoffers.model.entity;
 import bg.softuni.mobileleleoffers.model.enums.EngineTypeEnum;
 import jakarta.persistence.*;
 
+import java.time.Instant;
+
 @Entity
 @Table(name = "offers")
 public class Offer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")// mySQL specific have to use containers for the tests to pass correctly
     private String description;
     @Enumerated(EnumType.STRING)
     private EngineTypeEnum engine;
@@ -17,6 +19,8 @@ public class Offer {
     private int mileage;
     @Column
     private double price;
+    @Column(nullable = false)
+    private Instant created = Instant.now();
 
     public Offer() {
     }
@@ -63,6 +67,15 @@ public class Offer {
 
     public Offer setPrice(double price) {
         this.price = price;
+        return this;
+    }
+
+    public Instant getCreated() {
+        return created;
+    }
+
+    public Offer setCreated(Instant created) {
+        this.created = created;
         return this;
     }
 }
