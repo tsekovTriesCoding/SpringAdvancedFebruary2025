@@ -9,6 +9,8 @@ import bg.softuni.mobileleleoffers.service.exception.ObjectNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -34,11 +36,10 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public List<OfferDTO> getAllOffers() {
-        return this.offerRepository.findAll()
-                .stream()
-                .map(OfferServiceImpl::map)
-                .toList();
+    public PagedModel<OfferDTO> getAllOffers(Pageable pageable) {
+        return new PagedModel<OfferDTO>(
+                offerRepository.findAll(pageable)
+                        .map(OfferServiceImpl::map));
     }
 
     @Override

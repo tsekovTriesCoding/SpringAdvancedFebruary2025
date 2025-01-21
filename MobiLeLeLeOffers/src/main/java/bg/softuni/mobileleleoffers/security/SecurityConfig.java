@@ -1,5 +1,6 @@
 package bg.softuni.mobileleleoffers.security;
 
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,6 +25,7 @@ public class SecurityConfig {
                         authorize ->
                                 authorize
                                         .requestMatchers(HttpMethod.GET, "/offers/**", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
+                                        .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
                                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

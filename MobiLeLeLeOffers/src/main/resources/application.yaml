@@ -29,3 +29,12 @@ offers.retention.period: P300D
 
 jwt:
   secret: ${JWT_KEY}
+
+#---for the actuator to expose sensitive info if wanted!
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  server:
+    port: 8082
