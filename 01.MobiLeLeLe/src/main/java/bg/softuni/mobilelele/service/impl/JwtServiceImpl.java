@@ -14,6 +14,7 @@ import java.util.Map;
 
 @Service
 public class JwtServiceImpl implements JwtService {
+
     private final String jwtSecret;
     private final long expiration;
 

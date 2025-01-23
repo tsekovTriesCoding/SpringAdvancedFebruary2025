@@ -1,10 +1,12 @@
 package bg.softuni.mobilelele.service.impl;
 
 import bg.softuni.mobilelele.config.ForexApiConfig;
+import bg.softuni.mobilelele.model.dto.ExRateDTO;
 import bg.softuni.mobilelele.model.dto.ExRatesDTO;
 import bg.softuni.mobilelele.model.entity.ExRate;
 import bg.softuni.mobilelele.repository.ExRateRepository;
 import bg.softuni.mobilelele.service.ExRateService;
+import bg.softuni.mobilelele.service.KafkaPublicationService;
 import bg.softuni.mobilelele.service.exception.ApiObjectNotFoundException;
 import bg.softuni.mobilelele.service.exception.ObjectNotFoundException;
 import org.slf4j.Logger;
@@ -16,6 +18,7 @@ import org.springframework.web.client.RestClient;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,13 +31,16 @@ public class ExRateServiceImpl implements ExRateService {
     private final ExRateRepository exRateRepository;
     private final RestClient restClient;
     private final ForexApiConfig forexApiConfig;
+    private final KafkaPublicationService kafkaPublicationService;
 
     public ExRateServiceImpl(ExRateRepository exRateRepository,
                              @Qualifier("genericRestClient") RestClient restClient,
-                             ForexApiConfig forexApiConfig) {
+                             ForexApiConfig forexApiConfig,
+                             KafkaPublicationService kafkaPublicationService) {
         this.exRateRepository = exRateRepository;
         this.restClient = restClient;
         this.forexApiConfig = forexApiConfig;
+        this.kafkaPublicationService = kafkaPublicationService;
     }
 
     @Override
@@ -113,4 +119,23 @@ public class ExRateServiceImpl implements ExRateService {
                 .orElseThrow(() -> new ApiObjectNotFoundException("Conversion from " + from + " to " + to + " not possible!", from + "~" + to))
                 .multiply(amount);
     }
+
+    @Override
+    public void publishExRates() {
+        List<ExRateDTO> exRates = exRateRepository
+                .findAll()
+                .stream()
+                .sorted(Comparator.comparing(ExRate::getCurrency))
+                .map(this::map)
+                .toList();
+
+        exRates.forEach(
+                kafkaPublicationService::publishExRate
+        );
+    }
+
+    private ExRateDTO map(ExRate exRateEntity) {
+        return new ExRateDTO(exRateEntity.getCurrency(), exRateEntity.getRate());
+    }
+
 }

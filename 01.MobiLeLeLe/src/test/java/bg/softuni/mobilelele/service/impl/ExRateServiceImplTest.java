@@ -45,7 +45,8 @@ public class ExRateServiceImplTest {
         toTest = new ExRateServiceImpl(
                 mockRepository,
                 null,
-                new ForexApiConfig().setBase(TestRates.BASE_CURRENCY)
+                new ForexApiConfig().setBase(TestRates.BASE_CURRENCY),
+                null
         );
     }
 

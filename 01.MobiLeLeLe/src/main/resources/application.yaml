@@ -21,13 +21,17 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
-
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 forex:
   api:
     key: ${FOREX_API_KEY}
     url: "https://openexchangerates.org/api/latest.json?app_id={app_id}"
     base: "USD"
-
+  init-ex-rates: ${INIT_EX_RATES:false}
 offers:
   api:
     baseUrl: "http://localhost:8081"
