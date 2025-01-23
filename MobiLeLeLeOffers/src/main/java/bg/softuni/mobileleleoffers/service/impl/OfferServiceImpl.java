@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -42,8 +44,10 @@ public class OfferServiceImpl implements OfferService {
                         .map(OfferServiceImpl::map));
     }
 
+
     @Override
-    public void deleteOffer(Long offerId) {
+    @PreAuthorize("@offerServiceImpl.isOwner(#userDetails, #offerId)")
+    public void deleteOffer(UserDetails userDetails, Long offerId) {
         this.offerRepository.deleteById(offerId);
     }
 
@@ -62,6 +66,11 @@ public class OfferServiceImpl implements OfferService {
         LOGGER.info("Cleaning up old offers older than {}", deleteBefore);
         offerRepository.deleteOldOffers(deleteBefore);
         LOGGER.info("Old offers were removed");
+    }
+
+    @Override
+    public boolean isOwner(UserDetails userDetails, Long offerId) {
+        return true;
     }
 
     private static OfferDTO map(Offer offer) {
