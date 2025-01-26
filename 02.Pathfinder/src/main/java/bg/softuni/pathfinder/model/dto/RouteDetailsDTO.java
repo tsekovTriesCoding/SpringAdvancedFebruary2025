@@ -18,4 +18,5 @@ public class RouteDetailsDTO {
     private String videoUrl;
     private String authorName;
     private List<String> imageUrls;
+    private List<RouteDetailsCommentDTO> comments;
 }

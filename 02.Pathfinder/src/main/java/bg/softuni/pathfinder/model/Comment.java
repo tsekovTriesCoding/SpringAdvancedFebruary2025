@@ -34,7 +34,7 @@ public class Comment {
             name = "text_content",
             columnDefinition = "TEXT"
     )
-    private String textContent;
+    private String content;
     @ManyToOne(
             optional = false
     )

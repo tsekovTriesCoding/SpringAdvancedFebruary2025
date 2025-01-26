@@ -2,10 +2,7 @@ package bg.softuni.pathfinder.service.impl;
 
 import bg.softuni.pathfinder.model.Picture;
 import bg.softuni.pathfinder.model.Route;
-import bg.softuni.pathfinder.model.dto.AddRouteDTO;
-import bg.softuni.pathfinder.model.dto.RouteCategoryDTO;
-import bg.softuni.pathfinder.model.dto.RouteDetailsDTO;
-import bg.softuni.pathfinder.model.dto.RouteShortInfoDTO;
+import bg.softuni.pathfinder.model.dto.*;
 import bg.softuni.pathfinder.model.enums.CategoryType;
 import bg.softuni.pathfinder.repository.RouteRepository;
 import bg.softuni.pathfinder.service.RouteService;
@@ -106,6 +103,9 @@ public class RouteServiceImpl implements RouteService {
         RouteDetailsDTO dto = modelMapper.map(route, RouteDetailsDTO.class);
         dto.setVideoUrl("https://www.youtube.com/embed/" + dto.getVideoUrl());
         dto.setImageUrls(List.of("/images/pic4.jpg", "/images/pic1.jpg"));
+        dto.setComments(route.getComments().stream()
+                .map(comment -> modelMapper.map(comment, RouteDetailsCommentDTO.class))
+                .toList());
 
         return dto;
     }
