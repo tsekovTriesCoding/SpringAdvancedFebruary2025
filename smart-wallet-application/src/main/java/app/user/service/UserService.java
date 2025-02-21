@@ -1,6 +1,7 @@
 package app.user.service;
 
 import app.exception.DomainException;
+import app.security.AuthenticationMetadata;
 import app.subscription.model.Subscription;
 import app.subscription.service.SubscriptionService;
 import app.user.model.User;
@@ -15,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +30,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -74,7 +78,7 @@ public class UserService {
         Subscription defaultSubscription = subscriptionService.createDefaultSubscription(user);
         user.setSubscriptions(List.of(defaultSubscription));
 
-        Wallet standardWallet = walletService.createNewWallet(user);
+        Wallet standardWallet = walletService.initilizeFirstWallet(user);
         user.setWallets(List.of(standardWallet));
 
         log.info("Successfully create new user account for username [%s] and id [%s]".formatted(user.getUsername(), user.getId()));
@@ -151,5 +155,12 @@ public class UserService {
         }
 
         userRepository.save(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new DomainException("User with this username does not exist."));
+
+        return new AuthenticationMetadata(user.getId(), username, user.getPassword(), user.getRole(), user.isActive());
     }
 }
