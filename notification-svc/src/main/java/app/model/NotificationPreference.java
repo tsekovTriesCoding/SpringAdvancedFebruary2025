@@ -24,9 +24,8 @@ public class NotificationPreference {
     @Enumerated(EnumType.STRING)
     private NotificationType type;
 
-    private boolean isEnabled;
+    private boolean enabled;
 
-    @Column(nullable = false)
     private String contactInfo;
 
     @Column(nullable = false)
