@@ -1,6 +1,7 @@
 package app.user.service;
 
 import app.exception.DomainException;
+import app.notification.service.NotificationService;
 import app.security.AuthenticationMetadata;
 import app.subscription.model.Subscription;
 import app.subscription.service.SubscriptionService;
@@ -9,7 +10,6 @@ import app.user.model.UserRole;
 import app.user.repository.UserRepository;
 import app.wallet.model.Wallet;
 import app.wallet.service.WalletService;
-import app.web.dto.LoginRequest;
 import app.web.dto.RegisterRequest;
 import app.web.dto.UserEditRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -36,32 +36,20 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final SubscriptionService subscriptionService;
     private final WalletService walletService;
+    private final NotificationService notificationService;
 
     @Autowired
     public UserService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        SubscriptionService subscriptionService,
-                       WalletService walletService) {
+                       WalletService walletService,
+                       NotificationService notificationService) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.subscriptionService = subscriptionService;
         this.walletService = walletService;
-    }
-
-    public User login(LoginRequest loginRequest) {
-
-        Optional<User> optionUser = userRepository.findByUsername(loginRequest.getUsername());
-        if (optionUser.isEmpty()) {
-            throw new DomainException("Username or password are incorrect.");
-        }
-
-        User user = optionUser.get();
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new DomainException("Username or password are incorrect.");
-        }
-
-        return user;
+        this.notificationService = notificationService;
     }
 
     @CacheEvict(value = "users", allEntries = true)
@@ -81,6 +69,9 @@ public class UserService implements UserDetailsService {
         Wallet standardWallet = walletService.initilizeFirstWallet(user);
         user.setWallets(List.of(standardWallet));
 
+        // Persist new notification preference with isEnabled = false
+        notificationService.saveNotificationPreference(user.getId(), false, null);
+
         log.info("Successfully create new user account for username [%s] and id [%s]".formatted(user.getUsername(), user.getId()));
 
         return user;
@@ -91,10 +82,18 @@ public class UserService implements UserDetailsService {
 
         User user = getById(userId);
 
+        if (userEditRequest.getEmail().isBlank()) {
+            notificationService.saveNotificationPreference(userId, false, null);
+        }
+
         user.setFirstName(userEditRequest.getFirstName());
         user.setLastName(userEditRequest.getLastName());
         user.setEmail(userEditRequest.getEmail());
         user.setProfilePicture(userEditRequest.getProfilePicture());
+
+        if (!userEditRequest.getEmail().isBlank()) {
+            notificationService.saveNotificationPreference(userId, true, userEditRequest.getEmail());
+        }
 
         userRepository.save(user);
     }
@@ -157,8 +156,11 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    // Всеки пък, когато потребител се логва, Spring Security ще извиква този метод
+    // за да вземе детайлите на потребителя с този username
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         User user = userRepository.findByUsername(username).orElseThrow(() -> new DomainException("User with this username does not exist."));
 
         return new AuthenticationMetadata(user.getId(), username, user.getPassword(), user.getRole(), user.isActive());
