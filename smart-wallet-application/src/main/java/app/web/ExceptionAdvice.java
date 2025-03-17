@@ -1,8 +1,13 @@
 package app.web;
 
+import app.exception.NotificationServiceFeignCallException;
 import app.exception.UsernameAlreadyExistException;
+import app.user.model.UserRole;
+import jakarta.servlet.http.HttpServletRequest;
+import org.hibernate.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,7 +26,7 @@ public class ExceptionAdvice {
     // ВАЖНО: При редирект не връщаме @ResponseStatus(...)!!!
     // 1
     @ExceptionHandler(UsernameAlreadyExistException.class)
-    public String handleUsernameAlreadyExist(RedirectAttributes redirectAttributes, UsernameAlreadyExistException exception) {
+    public String handleUsernameAlreadyExist(HttpServletRequest request, RedirectAttributes redirectAttributes, UsernameAlreadyExistException exception) {
 
         // Option 1
         //Autowire HttpServletRequest request
@@ -35,6 +40,21 @@ public class ExceptionAdvice {
         return "redirect:/register";
     }
 
+    @ExceptionHandler(NotificationServiceFeignCallException.class)
+    public String handleNotificationFeignCallException(RedirectAttributes redirectAttributes, NotificationServiceFeignCallException exception) {
+
+        // Option 1
+        //Autowire HttpServletRequest request
+        //String username = request.getParameter("username");
+        //String message = "%s is already in use!".formatted(username);
+
+        // Option 2
+        String message = exception.getMessage();
+
+        redirectAttributes.addFlashAttribute("clearHistoryErrorMessage", message);
+        return "redirect:/notifications";
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler({
             AccessDeniedException.class, // Когато се опотва да достъпи ендпойнт, до който не му е позволено/нямам достъп
@@ -42,7 +62,7 @@ public class ExceptionAdvice {
             MethodArgumentTypeMismatchException.class,
             MissingRequestValueException.class
     })
-    public ModelAndView handleNotFoundExceptions() {
+    public ModelAndView handleNotFoundExceptions(Exception exception) {
 
         return new ModelAndView("not-found");
     }

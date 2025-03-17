@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 // url - основен ednpoint
-@FeignClient(name = "notification-svc", url = "http://localhost:8081/api/v1/notifications")
+@FeignClient(name = "notification-svc", url = "${notification-svc.base-url}")
 public interface NotificationClient {
 
     @GetMapping("/test")
@@ -32,4 +32,10 @@ public interface NotificationClient {
 
     @PutMapping("/preferences")
     ResponseEntity<Void> updateNotificationPreference(@RequestParam("userId") UUID userId, @RequestParam("enabled") boolean enabled);
+
+    @DeleteMapping
+    ResponseEntity<Void> clearHistory(@RequestParam(name = "userId") UUID userId);
+
+    @PutMapping
+    ResponseEntity<Void> retryFailedNotifications(@RequestParam(name = "userId") UUID userId);
 }

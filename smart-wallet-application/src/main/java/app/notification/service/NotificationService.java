@@ -1,5 +1,6 @@
 package app.notification.service;
 
+import app.exception.NotificationServiceFeignCallException;
 import app.notification.client.NotificationClient;
 import app.notification.client.dto.Notification;
 import app.notification.client.dto.NotificationPreference;
@@ -7,6 +8,7 @@ import app.notification.client.dto.NotificationRequest;
 import app.notification.client.dto.UpsertNotificationPreference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,9 @@ import java.util.UUID;
 public class NotificationService {
 
     private final NotificationClient notificationClient;
+
+    @Value("${notification-svc.failure-message.clear-history}")
+    private String clearHistoryFailedMessage;
 
     @Autowired
     public NotificationService(NotificationClient notificationClient) {
@@ -34,9 +39,13 @@ public class NotificationService {
                 .build();
 
         // Invoke Feign client and execute HTTP Post Request.
-        ResponseEntity<Void> httpResponse = notificationClient.upsertNotificationPreference(notificationPreference);
-        if (!httpResponse.getStatusCode().is2xxSuccessful()) {
-            log.error("[Feign call to notification-svc failed] Can't save user preference for user with id = [%s]".formatted(userId));
+        try {
+            ResponseEntity<Void> httpResponse = notificationClient.upsertNotificationPreference(notificationPreference);
+            if (!httpResponse.getStatusCode().is2xxSuccessful()) {
+                log.error("[Feign call to notification-svc failed] Can't save user preference for user with id = [%s]".formatted(userId));
+            }
+        } catch (Exception e) {
+            log.error("Unable to call notification-svc.");
         }
     }
 
@@ -84,6 +93,26 @@ public class NotificationService {
             notificationClient.updateNotificationPreference(userId, enabled);
         } catch (Exception e) {
             log.warn("Can't update notification preferences for user with id = [%s].".formatted(userId));
+        }
+    }
+
+    public void clearHistory(UUID userId) {
+
+        try {
+            notificationClient.clearHistory(userId);
+        } catch (Exception e) {
+            log.error("Unable to call notification-svc for clear notification history.".formatted(userId));
+            throw new NotificationServiceFeignCallException(clearHistoryFailedMessage);
+        }
+    }
+
+    public void retryFailed(UUID userId) {
+
+        try {
+            notificationClient.retryFailedNotifications(userId);
+        } catch (Exception e) {
+            log.error("Unable to call notification-svc for clear notification history.".formatted(userId));
+            throw new NotificationServiceFeignCallException(clearHistoryFailedMessage);
         }
     }
 }
