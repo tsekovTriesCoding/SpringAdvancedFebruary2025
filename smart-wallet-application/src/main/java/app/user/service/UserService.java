@@ -53,6 +53,9 @@ public class UserService implements UserDetailsService {
         this.notificationService = notificationService;
     }
 
+    // Register
+    // Test 1: When user exist with this username -> exception is thrown
+    // Test 2: Happy path
     @CacheEvict(value = "users", allEntries = true)
     @Transactional
     public User register(RegisterRequest registerRequest) {
@@ -65,10 +68,10 @@ public class UserService implements UserDetailsService {
         User user = userRepository.save(initializeUser(registerRequest));
 
         Subscription defaultSubscription = subscriptionService.createDefaultSubscription(user);
-        user.setSubscriptions(List.of(defaultSubscription));
+        user.setSubscriptions(List.of(defaultSubscription)); // Has 1 subscription
 
         Wallet standardWallet = walletService.initilizeFirstWallet(user);
-        user.setWallets(List.of(standardWallet));
+        user.setWallets(List.of(standardWallet)); // Has 1 wallet
 
         // Persist new notification preference with isEnabled = false
         notificationService.saveNotificationPreference(user.getId(), false, null);
@@ -78,14 +81,12 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    // Test Case: When there is no user in the database (repository returns Optional.empty()) - then expect an exception
+    // of type DomainException is thrown
     @CacheEvict(value = "users", allEntries = true)
     public void editUserDetails(UUID userId, UserEditRequest userEditRequest) {
 
         User user = getById(userId);
-
-        if (userEditRequest.getEmail().isBlank()) {
-            notificationService.saveNotificationPreference(userId, false, null);
-        }
 
         user.setFirstName(userEditRequest.getFirstName());
         user.setLastName(userEditRequest.getLastName());
@@ -94,6 +95,8 @@ public class UserService implements UserDetailsService {
 
         if (!userEditRequest.getEmail().isBlank()) {
             notificationService.saveNotificationPreference(userId, true, userEditRequest.getEmail());
+        } else {
+            notificationService.saveNotificationPreference(userId, false, null);
         }
 
         userRepository.save(user);
@@ -122,7 +125,11 @@ public class UserService implements UserDetailsService {
 
     public User getById(UUID id) {
 
-        return userRepository.findById(id).orElseThrow(() -> new DomainException("User with id [%s] does not exist.".formatted(id)));
+        Optional<User> user = userRepository.findById(id);
+
+        user.orElseThrow(() -> new DomainException("User with id [%s] does not exist.".formatted(id)));
+
+        return user.get();
     }
 
     @CacheEvict(value = "users", allEntries = true)
@@ -143,6 +150,8 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    // If user is ADMIN -> USER
+    // If user is USER -> ADMIN
     @CacheEvict(value = "users", allEntries = true)
     public void switchRole(UUID userId) {
 
@@ -159,6 +168,8 @@ public class UserService implements UserDetailsService {
 
     // Всеки пък, когато потребител се логва, Spring Security ще извиква този метод
     // за да вземе детайлите на потребителя с този username
+    // Test 1: When user exist - then return new AuthenticationMetadata
+    // Test 2: When User does not exist - then throws exception
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
