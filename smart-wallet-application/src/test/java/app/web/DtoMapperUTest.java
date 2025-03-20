@@ -2,6 +2,7 @@ package app.web;
 
 import app.mapper.DtoMapper;
 import app.user.model.User;
+
 import app.web.dto.UserEditRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
