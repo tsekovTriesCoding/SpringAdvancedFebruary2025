@@ -5,7 +5,6 @@ import app.user.model.User;
 import app.user.service.UserService;
 import app.web.dto.LoginRequest;
 import app.web.dto.RegisterRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.UUID;
 
 @Controller
 public class IndexController {
@@ -28,12 +25,15 @@ public class IndexController {
         this.userService = userService;
     }
 
+    // GET /
+    // Result - view name index
     @GetMapping("/")
     public String getIndexPage() {
 
         return "index";
     }
 
+    // JoinPoint
     @GetMapping("/login")
     public ModelAndView getLoginPage(@RequestParam(value = "error", required = false) String errorParam) {
 
@@ -48,6 +48,7 @@ public class IndexController {
         return modelAndView;
     }
 
+    // JoinPoint
     @GetMapping("/register")
     public ModelAndView getRegisterPage() {
 
@@ -58,13 +59,17 @@ public class IndexController {
         return modelAndView;
     }
 
+    // POST with correct form data
+    // Expect:
+    // status - 200 OK
+    // called .register method of userService
+    // redirect to /login
     @PostMapping("/register")
     public ModelAndView registerNewUser(@Valid RegisterRequest registerRequest, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return new ModelAndView("register");
         }
-
 
         userService.register(registerRequest);
 
